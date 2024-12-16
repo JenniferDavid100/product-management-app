@@ -1,0 +1,66 @@
+<div class="container mt-4">
+    <h2>Product List</h2>
+    
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <input type="text" class="form-control" 
+                   placeholder="Search products..." 
+                   [ngModel]="searchTerm()"
+                   (ngModelChange)="searchTerm.set($event)">
+        </div>
+        <div class="col-md-6">
+            <select class="form-select" 
+                    [ngModel]="selectedCategory()"
+                    (ngModelChange)="selectedCategory.set($event)">
+                @for (category of categories; track category) {
+                    <option [value]="category">
+                        {{ category === 'all' ? 'All Categories' : category }}
+                    </option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Category</th>
+                <th>Stock Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (product of filteredProducts; track product.id) {
+                <tr>
+                    <td>{{ product.id }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.price | currency:'INR':'symbol' }}</td>
+                    <td>{{ product.category }}</td>
+                    <td>
+                        <button class="btn btn-sm"
+                                [class.btn-success]="product.inStock"
+                                [class.btn-warning]="!product.inStock"
+                                (click)="toggleStock(product.id)">
+                            {{ product.inStock ? 'In Stock' : 'Out of Stock' }}
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm me-2" (click)="onEdit(product.id)">
+                            Edit
+                        </button>
+                        <button class="btn btn-danger btn-sm" (click)="deleteProduct(product.id)">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            } @empty {
+                <tr>
+                    <td colspan="6" class="text-center">No products found</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
